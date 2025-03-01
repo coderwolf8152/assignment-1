@@ -10,10 +10,20 @@ import './App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [users, setUsers] = useState([]); // ✅ State for MongoDB users
 
+  // ✅ Check authentication status
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     setIsAuthenticated(!!token);
+  }, []);
+
+  // ✅ Fetch users from MongoDB
+  useEffect(() => {
+    fetch("http://localhost:5000/users")
+      .then((res) => res.json())
+      .then((data) => setUsers(data))
+      .catch((error) => console.error("Error fetching users:", error));
   }, []);
 
   const handleLogout = () => {
@@ -47,24 +57,38 @@ function App() {
             <Route path="/post-auction" element={<PostAuction />} />
           </Routes>
         </main>
+
+        {/* ✅ Dashboard Preview Section */}
         <section className="dashboard-preview">
           <h2>Featured Auctions</h2>
           <div className="auction-list">
-  <div className="auction-item">
-    <img src="watch.jpg" alt="Auction Item 1" className="auction-image" />
-    <p>Luxury Watch - Current Bid: $5,000</p>
-  </div>
-  <div className="auction-item">
-    <img src="car.jpg" alt="Auction Item 2" className="auction-image" />
-    <p>Classic Car - Current Bid: $50,000</p>
-  </div>
-  <div className="auction-item">
-    <img src="neck.jpg" alt="Auction Item 3" className="auction-image" />
-    <p>Diamond Necklace - Current Bid: $12,000</p>
-  </div>
-</div>
-
+            <div className="auction-item">
+              <img src="watch.jpg" alt="Auction Item 1" className="auction-image" />
+              <p>Luxury Watch - Current Bid: $5,000</p>
+            </div>
+            <div className="auction-item">
+              <img src="car.jpg" alt="Auction Item 2" className="auction-image" />
+              <p>Classic Car - Current Bid: $50,000</p>
+            </div>
+            <div className="auction-item">
+              <img src="neck.jpg" alt="Auction Item 3" className="auction-image" />
+              <p>Diamond Necklace - Current Bid: $12,000</p>
+            </div>
+          </div>
         </section>
+
+        {/* ✅ Users List from MongoDB */}
+        <section className="user-list">
+          <h2>Registered Users</h2>
+          <ul>
+            {users.map((user, index) => (
+              <li key={index}>
+                {user.name} - {user.email}
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <footer>
           <p>&copy; 2025 AuctionX. Premium Auction Experience.</p>
         </footer>
